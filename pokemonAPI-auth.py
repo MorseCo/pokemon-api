@@ -1,4 +1,5 @@
 from http.client import REQUEST_ENTITY_TOO_LARGE
+from webbrowser import get
 from flask import Flask, render_template, request, url_for, jsonify, json
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -8,6 +9,10 @@ from pymongo import MongoClient, InsertOne
 from bson.json_util import dumps
 import random
 from flask_cors import CORS, cross_origin
+from flask_httpauth import HTTPBasicAuth
+from flask import request
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 
 #Simplified Object for pokemon
@@ -24,12 +29,27 @@ client = pymongo.MongoClient("localhost:27017")
 db = client["pokemonDB"]
 col = db["pokemon"]
 
-authorizedAPIKeys = ['YXNoOmtldGNodW0=']
 
 #Flask setup
 app = Flask(__name__)
+auth = HTTPBasicAuth()
 CORS(app, support_credentials=True)
 app.config['JSON_SORT_KEYS'] = False
+
+
+users = {
+    "ash": generate_password_hash("pikachu"),
+    "brock": generate_password_hash("onix"),
+    "misty": generate_password_hash("staryu")
+}
+
+
+@auth.verify_password
+def verify_password(username, password):
+    if username in users and \
+            check_password_hash(users.get(username), password):
+        return username
+
 
 
 @app.route("/")
@@ -38,6 +58,7 @@ def status_check():
 
 
 @app.route('/pokemon/<pokemon>', methods=['GET'])
+@auth.login_required
 def getPokemonName(pokemon):
     query = {}
     try:
@@ -49,6 +70,7 @@ def getPokemonName(pokemon):
 
 
 @app.route('/pokemon/simple/<pokemon>', methods=['GET'])
+@auth.login_required
 def getSimplePokemonName(pokemon):
     query = {}
     try:
@@ -60,6 +82,7 @@ def getSimplePokemonName(pokemon):
 
 
 @app.route('/pokemon/random/', methods=['GET'])
+@auth.login_required
 def getRandomPokemon():
     randomInteger = random.randint(1,151)
     query = {"id": randomInteger}
@@ -67,10 +90,17 @@ def getRandomPokemon():
 
 
 @app.route('/pokemon/simple/random/', methods=['GET'])
+@auth.login_required
 def getSimpleRandomPokemon():
     randomInteger = random.randint(1,151)
     query = {"id": randomInteger}
     return getSimplePokemonWithQuery(query)
+
+
+@app.route('/authenticate', methods=['get'])
+@auth.login_required
+def isAuthenticated():
+    return {"Success": "Logged in"}
 
 
 def getPokemonWithQuery(myQuery):
