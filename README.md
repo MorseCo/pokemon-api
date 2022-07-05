@@ -27,3 +27,7 @@ If you would like to run this locally I have included a file called `pokeScraper
 
 I have included this file so you can perform a DOS attack against the locally hosted application. It's a simple for loop that will count the number of successful and failed responses that the API has returned. You can modify the `requestCount` variable to change the amount of iterations of the loop.
 
+## Postman
+
+I've also added a postman collection to interact with the flask apps, if you would like to test without using the UI.
+It currently has authentication enabled for each API call, but if you are testing the base `pokemonAPI.py` app, which does not use authentication, you should turn off authentication for the postman calls. 
