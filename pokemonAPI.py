@@ -8,6 +8,7 @@ from pymongo import MongoClient, InsertOne
 from bson.json_util import dumps
 import random
 from flask_cors import CORS, cross_origin
+import certifi
 
 
 #Simplified Object for pokemon
@@ -19,8 +20,15 @@ class SimplePokemon:
         self.height = height
         self.weight = weight
 
-#Mongo setup
-client = pymongo.MongoClient("localhost:27017")
+#========== Local Mongo ==========
+# client = pymongo.MongoClient("localhost:27017")
+#=================================
+
+#========== Cloud Mongo ==========
+ca = certifi.where()
+client = pymongo.MongoClient("mongodb+srv://guest:hackedu@cluster0.3wbon.mongodb.net/?retryWrites=true&w=majority", tlsCAFile=ca)
+#=================================
+
 db = client["pokemonDB"]
 col = db["pokemon"]
 

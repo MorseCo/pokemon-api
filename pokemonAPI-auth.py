@@ -12,7 +12,7 @@ from flask_cors import CORS, cross_origin
 from flask_httpauth import HTTPBasicAuth
 from flask import request
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import certifi
 
 
 #Simplified Object for pokemon
@@ -24,8 +24,15 @@ class SimplePokemon:
         self.height = height
         self.weight = weight
 
-#Mongo setup
-client = pymongo.MongoClient("localhost:27017")
+#========== Local Mongo ==========
+# client = pymongo.MongoClient("localhost:27017")
+#=================================
+
+#========== Cloud Mongo ==========
+ca = certifi.where()
+client = pymongo.MongoClient("mongodb+srv://guest:hackedu@cluster0.3wbon.mongodb.net/?retryWrites=true&w=majority", tlsCAFile=ca)
+#=================================
+
 db = client["pokemonDB"]
 col = db["pokemon"]
 

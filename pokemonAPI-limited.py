@@ -14,7 +14,7 @@ from flask import request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-
+import certifi
 
 
 #Simplified Object for pokemon
@@ -26,8 +26,16 @@ class SimplePokemon:
         self.height = height
         self.weight = weight
 
-#Mongo setup
-client = pymongo.MongoClient("localhost:27017")
+
+#========== Local Mongo ==========
+# client = pymongo.MongoClient("localhost:27017")
+#=================================
+
+#========== Cloud Mongo ==========
+ca = certifi.where()
+client = pymongo.MongoClient("mongodb+srv://guest:hackedu@cluster0.3wbon.mongodb.net/?retryWrites=true&w=majority", tlsCAFile=ca)
+#=================================
+
 db = client["pokemonDB"]
 col = db["pokemon"]
 
@@ -41,6 +49,7 @@ limiter = Limiter(
 )
 CORS(app, support_credentials=True)
 app.config['JSON_SORT_KEYS'] = False
+
 
 #Authorized Users
 users = {

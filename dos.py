@@ -12,8 +12,8 @@ def main():
     
     for i in range(requestCount):
         response = requests.request("GET", appUrl, auth=("ash", "pikachu"))
+        print(response.status_code)
         if response.status_code == 200:
-            # print(response.text)
             successfulCalls += 1
         elif response.status_code >= 400 or response.status_code < 200:
             failedCalls += 1
