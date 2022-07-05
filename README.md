@@ -23,7 +23,7 @@ There are 3 versions of the Pokemon API.
 
 If you would like to run this locally I have inluded a file called `pokeScraper.py` that will allow you scrape the PokeAPI, and fill your local mongo database. If you have mongoDB running locally, you can run this script and it will automatically fill your database with necessary data for the Pokemon API.
 
-## dos.py
+## DOS Attack
 
 I have included this file so you can perform a DOS attack against the locally hosted application. It's a simple for loop that will count the number of succesful and failed responses that the API has returned. You can modify the `requestCount` variable to change the amount of iterations of the loop.
 
